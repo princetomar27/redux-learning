@@ -34,12 +34,23 @@ function reducer(state = { amount: 1 }, action) {
 //   store.dispatch({ type: "decrement" });
 // }, 3000);
 
+// Action creators
 function incrementCounter() {
   return { type: "increment" };
 }
 
+function decrement() {
+  return { type: "decrement" };
+}
+
+function incrementByAmountCounter(amount) {
+  return { type: "incrementByAmount", payload: amount };
+}
+
+//----------------------------------------------------------------
+
 setInterval(() => {
-  store.dispatch(incrementCounter());
+  store.dispatch(incrementByAmountCounter(4));
 }, 1500);
 
 console.log(store.getState());
