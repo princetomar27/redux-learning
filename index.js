@@ -1,6 +1,10 @@
 import { createStore, applyMiddleware } from "redux";
 import logger from "redux-logger";
 
+const inc = "increment";
+const dec = "decrement";
+const incByAmount = "incrementByAmount";
+
 // store
 const store = createStore(reducer, applyMiddleware(logger.default));
 
@@ -8,13 +12,13 @@ const historyState = [];
 
 // reducer
 function reducer(state = { amount: 1 }, action) {
-  if (action.type === "increment") {
+  if (action.type === inc) {
     return { amount: state.amount + 1 };
   }
-  if (action.type === "decrement") {
+  if (action.type === dec) {
     return { amount: state.amount - 1 };
   }
-  if (action.type === "incrementByAmount") {
+  if (action.type === incByAmount) {
     return { amount: state.amount + action.payload };
   }
   return state;
@@ -36,15 +40,15 @@ function reducer(state = { amount: 1 }, action) {
 
 // Action creators
 function incrementCounter() {
-  return { type: "increment" };
+  return { type: inc };
 }
 
 function decrement() {
-  return { type: "decrement" };
+  return { type: dec };
 }
 
 function incrementByAmountCounter(amount) {
-  return { type: "incrementByAmount", payload: amount };
+  return { type: incByAmount, payload: amount };
 }
 
 //----------------------------------------------------------------
