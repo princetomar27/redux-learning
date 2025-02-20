@@ -50,14 +50,12 @@ function reducer(state = { amount: 1 }, action) {
 
 // Action creators
 
-async function getUser(dispatch, getState) {
-  try {
-    const { data } = await axios.get("http://localhost:3000/accounts/1");
+function getUser(id) {
+  return async (dispatch, getState) => {
+    const { data } = await axios.get(`http://localhost:3000/accounts/${id}`);
     console.log("User data fetched:", data);
     dispatch(initUser(data.amount));
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-  }
+  };
 }
 
 function initUser(value) {
@@ -86,5 +84,5 @@ function incrementByAmountCounter(amount) {
 //----------------------------------------------------------------
 
 setTimeout(() => {
-  store.dispatch(getUser);
+  store.dispatch(getUser(2));
 }, 3000);
