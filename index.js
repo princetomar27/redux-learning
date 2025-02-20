@@ -1,27 +1,35 @@
 import { createStore, applyMiddleware } from "redux";
 import logger from "redux-logger";
+import axios from "axios";
+import { thunk } from "redux-thunk";
 
+// action types
 const inc = "increment";
 const dec = "decrement";
 const incByAmount = "incrementByAmount";
+const init = "init";
 
 // store
-const store = createStore(reducer, applyMiddleware(logger.default));
+const store = createStore(reducer, applyMiddleware(logger.default, thunk));
 
 const historyState = [];
 
 // reducer
 function reducer(state = { amount: 1 }, action) {
-  if (action.type === inc) {
-    return { amount: state.amount + 1 };
+  switch (action.type) {
+    case init:
+      return { amount: action.payload };
+
+    case inc:
+      return { amount: state.amount + 1 };
+
+    case dec:
+      return { amount: state.amount - 1 };
+    case incByAmount:
+      return { amount: state.amount + action.payload };
+    default:
+      return state;
   }
-  if (action.type === dec) {
-    return { amount: state.amount - 1 };
-  }
-  if (action.type === incByAmount) {
-    return { amount: state.amount + action.payload };
-  }
-  return state;
 }
 
 // global state
@@ -38,7 +46,31 @@ function reducer(state = { amount: 1 }, action) {
 //   store.dispatch({ type: "decrement" });
 // }, 3000);
 
+// Async API call to get user details
+
 // Action creators
+
+async function getUser(dispatch, getState) {
+  try {
+    const { data } = await axios.get("http://localhost:3000/accounts/1");
+    console.log("User data fetched:", data);
+    dispatch(initUser(data.amount));
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+}
+
+function initUser(value) {
+  return {
+    type: init,
+    payload: value,
+  };
+}
+
+// async function initUser(val) {
+//   return { type: init, payload: val };
+// }
+
 function incrementCounter() {
   return { type: inc };
 }
@@ -53,8 +85,6 @@ function incrementByAmountCounter(amount) {
 
 //----------------------------------------------------------------
 
-setInterval(() => {
-  store.dispatch(incrementByAmountCounter(4));
-}, 1500);
-
-console.log(store.getState());
+setTimeout(() => {
+  store.dispatch(getUser);
+}, 3000);
